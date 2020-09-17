@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <title>Typo.js Spell Check</title>
+  <link rel="stylesheet" href="spell.css" type="text/css" media="screen" />
+  <script src="js/typo.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Typo.js spell checker</h1>
+    <p>Dictionary <span id="c_dic">(loading...)</span></p>
+    <div>
+      <select id="dictionary">
+        <option value="en_US">English</option>
+        <option value="en_GB">British</option>
+        <option value="fr_FR">French</option>
+        <option value="de_DE">German</option>
+        <option value="la">Latin</option>
+      </select>
+      <button id="btn_change_dic" class='btn' disabled="" onclick="changeDic();">Change Dictionary</button>
+    </div>
+    <div id="results"></div>
+    <p>Try another word:</p>
+    <input type="text" id="word" value="mispelled" />
+    <button id="btn_spell_check" class="btn" disabled="" onclick="sepllCheck();">Spellcheck</button>
+  </div>
+  <input id='status' type="hidden" value="0" />
+  <script>
+    const updateLoadedDic = (html) => {
+      document.getElementById("c_dic").innerHTML = html;
+    }
+    const toggleBtn = (enabled = false) => {
+      document.getElementById("btn_change_dic").disabled = !enabled;
+      document.getElementById("btn_spell_check").disabled = !enabled;
+    };
+    const loadDict = (dic) => {
+      setLoadStatus(0);
+      updateLoadedDic('(loading...)');
+      new Typo(dic)
+        .ready.then(dict => {
+          updateLoadedDic('<strong>' + dict.dictionary + '</strong> Entries: ' +
+            '<strong>' + Object.keys(dict.dictionaryTable).length.toLocaleString(
+              undefined, // leave undefined to use the browser's locale,
+              // or use a string like 'en-US' to override it.
+              { minimumFractionDigits: 0 }
+            ) +
+            '</strong>');
+          setLoadStatus(1);
+          window.dict = dict;
+          sepllCheck();
+          toggleBtn(true);
+        })
+        .catch(err => {
+          console.error(err);
+          setLoadStatus(2);
+          updateLoadedDic('error');
+          toggleBtn(true);
+        });
+    };
+    const changeDic = () => {
+      toggleBtn();
+      const dic = document.getElementById("dictionary").value;
+      loadDict(dic);
+    };
+    const checkWord = (word) => {
+
+      const resultsContainer = document.getElementById('results');
+      resultsContainer.innerHTML = '';
+      const elSpellCorrect = document.createElement("p");
+      elSpellCorrect.innerHTML = "Is '" + word + "' spelled correctly?";
+      resultsContainer.appendChild(elSpellCorrect);
+
+      const is_spelled_correctly = dict.check(word);
+
+      const elBool = document.createElement('p');
+      const elBoolCode = document.createElement("code");
+      elBoolCode.innerText = is_spelled_correctly ? 'yes' : 'no';
+      elBool.appendChild(elBoolCode);
+      resultsContainer.appendChild(elBool);
+
+      if (!is_spelled_correctly) {
+        const elWordSuggestions = document.createElement('p');
+        elWordSuggestions.innerText = "Finding spelling suggestions for '" + word + "'...";
+        resultsContainer.appendChild(elWordSuggestions);
+
+        var array_of_suggestions = dict.suggest(word);
+        const elArrSuggestions = document.createElement('p');
+        const elArrSuggestionsCode = document.createElement('code');
+        elArrSuggestionsCode.innerText = array_of_suggestions.join(', ');
+        elArrSuggestions.appendChild(elArrSuggestionsCode);
+        resultsContainer.appendChild(elArrSuggestions);
+      }
+
+    };
+    const sepllCheck = () => {
+      if (getLoadStatus() !== '1') {
+        return;
+      }
+      const word = document.getElementById("word").value;
+      if (word.trim().length > 0) {
+        checkWord(word);
+      }
+    };
+    const setLoadStatus = (value) => {
+      document.getElementById('status').value = value;
+    };
+    const getLoadStatus = () => {
+      return document.getElementById('status').value;
+    };
+    (() => {
+      // getting the button & text box
+      const btn = document.getElementById('btn_spell_check');
+      const textBox = document.getElementById('word');
+
+      // attaching keyup event to textBox
+      textBox.addEventListener('keyup', (e) => {
+        e.preventDefault();
+        if (e.keyCode === 13) {
+          btn.click(); // triggering click if `keycode === 13` }
+        }
+      });
+      document.getElementById('dictionary').value = 'en_US';
+      loadDict('en_US');
+    })();
+  </script>
+</body>
+
+</html>

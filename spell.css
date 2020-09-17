@@ -1,0 +1,71 @@
+body {
+	background-color: #232327;
+	color: #b6b6b6;
+}
+code,
+pre {
+	background-color:#18181a;
+	color: #fc7ccd;
+}
+.container {
+	width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.content {
+	background-color: #2b81af;
+	border-radius: 5px 5px 5px 5px;
+	-moz-border-radius: 5px 5px 5px,
+	5px;
+}
+
+ /* unvisited link */
+ a:link {
+ 	color: #00fb56;
+ }
+
+ /* visited link */
+ a:visited {
+ 	color: #03b741;
+ }
+
+ /* mouse over link */
+ a:hover {
+ 	color: #e8a9ff;
+ }
+
+ /* selected link */
+ a:active {
+ 	color: blue;
+ }
+ /* https://www.css3buttongenerator.com/ */
+.btn {
+	background: #b3b3b3;
+	background-image: -webkit-linear-gradient(top, #b3b3b3, #3d3d3d);
+	background-image: -moz-linear-gradient(top, #b3b3b3, #3d3d3d);
+	background-image: -ms-linear-gradient(top, #b3b3b3, #3d3d3d);
+	background-image: -o-linear-gradient(top, #b3b3b3, #3d3d3d);
+	background-image: linear-gradient(to bottom, #b3b3b3, #3d3d3d);
+	-webkit-border-radius: 28;
+	-moz-border-radius: 28;
+	border-radius: 28px;
+	font-family: Arial;
+	color: #ffffff;
+	font-size: 10px;
+	padding: 6px 12px 6px 12px;
+	text-decoration: none;
+}
+
+.btn:hover {
+	background: #858585;
+	background-image: -webkit-linear-gradient(top, #858585, #2e2e2e);
+	background-image: -moz-linear-gradient(top, #858585, #2e2e2e);
+	background-image: -ms-linear-gradient(top, #858585, #2e2e2e);
+	background-image: -o-linear-gradient(top, #858585, #2e2e2e);
+	background-image: linear-gradient(to bottom, #858585, #2e2e2e);
+	text-decoration: none;
+}
+.btn:disabled {
+	background: #a8a8a8;
+	color: #000000;
+}
