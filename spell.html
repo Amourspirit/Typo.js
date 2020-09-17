@@ -4,6 +4,9 @@
 <head>
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
   <title>Typo.js Spell Check</title>
+  <meta name="generator" content="Typo-js-ts 2.0.2">
+  <meta name="description" content="Typo.js is a JavaScript spellchecker that uses Hunspell-style dictionaries.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="spell.css" type="text/css" media="screen" />
   <script src="js/typo.min.js"></script>
 </head>
@@ -26,6 +29,13 @@
     <p>Try another word:</p>
     <input type="text" id="word" value="mispelled" />
     <button id="btn_spell_check" class="btn" disabled="" onclick="sepllCheck();">Spellcheck</button>
+    <div id="footer">
+      <div class="container">
+        <div class='footer_links'>
+          <a href="https://github.com/Amourspirit/Typo.js" target="_blank">Source Code</a>
+        </div>
+      </div>
+    </div>
   </div>
   <input id='status' type="hidden" value="0" />
   <script>
@@ -52,12 +62,14 @@
           window.dict = dict;
           sepllCheck();
           toggleBtn(true);
+          localStorage.setItem('local', dict.dictionary);
         })
         .catch(err => {
           console.error(err);
           setLoadStatus(2);
           updateLoadedDic('error');
           toggleBtn(true);
+          localStorage.removeItem('local');
         });
     };
     const changeDic = () => {
@@ -93,7 +105,7 @@
         elArrSuggestions.appendChild(elArrSuggestionsCode);
         resultsContainer.appendChild(elArrSuggestions);
       }
-
+      localStorage.setItem('word', word);
     };
     const sepllCheck = () => {
       if (getLoadStatus() !== '1') {
@@ -111,6 +123,17 @@
       return document.getElementById('status').value;
     };
     (() => {
+      const injectFavIcon = () => {
+        let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+        let fav = location.pathname.substr(0, location.pathname.lastIndexOf('/'));
+
+        fav += '/favicon.ico';
+        link.type = 'image/x-icon';
+        link.rel = 'shortcut icon';
+        link.href = fav;
+        document.getElementsByTagName('head')[0].appendChild(link);
+      };
+      injectFavIcon();
       // getting the button & text box
       const btn = document.getElementById('btn_spell_check');
       const textBox = document.getElementById('word');
@@ -123,7 +146,18 @@
         }
       });
       document.getElementById('dictionary').value = 'en_US';
-      loadDict('en_US');
+      const local = localStorage.getItem('local');
+      const word = localStorage.getItem('word');
+      if (local) {
+        document.getElementById('dictionary').value = local;
+        loadDict(local);
+      } else {
+        loadDict('en_US');
+      }
+      if(word) {
+        document.getElementById('word').value = word;
+      }
+      
     })();
   </script>
 </body>
